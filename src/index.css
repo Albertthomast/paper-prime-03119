@@ -8,77 +8,105 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222 47% 11%;
+    /* Glassmorphism - Light Mode */
+    --background: 220 60% 98%;
+    --foreground: 230 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 230 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 230 25% 15%;
 
-    --primary: 221 83% 53%;
+    --primary: 250 85% 65%;
     --primary-foreground: 0 0% 100%;
+    
+    --primary-glow: 255 90% 75%;
+    --secondary-purple: 280 75% 65%;
+    --accent-blue: 220 90% 60%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary: 250 60% 96%;
+    --secondary-foreground: 230 25% 15%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 240 15% 96%;
+    --muted-foreground: 240 8% 50%;
 
-    --accent: 142 76% 36%;
+    --accent: 220 90% 60%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
+    --border: 240 20% 90%;
+    --input: 0 0% 100%;
+    --ring: 250 85% 65%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 280 90% 65%;
-    --chart-5: 340 82% 52%;
+    /* Glassmorphism effects */
+    --glass-bg: 0 0% 100% / 0.7;
+    --glass-border: 240 30% 95% / 0.5;
+    --glass-shadow: 250 50% 50% / 0.1;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(250 85% 65%), hsl(280 75% 65%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100% / 0.9), hsl(240 30% 98% / 0.9));
+    --gradient-accent: linear-gradient(135deg, hsl(220 90% 60%), hsl(250 85% 65%));
+    
+    /* Shadows */
+    --shadow-glass: 0 8px 32px 0 hsl(250 50% 50% / 0.1);
+    --shadow-hover: 0 12px 48px 0 hsl(250 50% 50% / 0.15);
+    --shadow-glow: 0 0 40px hsl(250 85% 65% / 0.3);
   }
 
   .dark {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Glassmorphism - Dark Mode */
+    --background: 230 35% 8%;
+    --foreground: 220 20% 95%;
 
-    --card: 217 33% 17%;
-    --card-foreground: 210 40% 98%;
+    --card: 230 25% 12%;
+    --card-foreground: 220 20% 95%;
 
-    --popover: 217 33% 17%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 230 25% 12%;
+    --popover-foreground: 220 20% 95%;
 
-    --primary: 221 83% 53%;
+    --primary: 250 85% 65%;
     --primary-foreground: 0 0% 100%;
+    
+    --primary-glow: 255 90% 75%;
+    --secondary-purple: 280 75% 65%;
+    --accent-blue: 220 90% 60%;
 
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 230 25% 15%;
+    --secondary-foreground: 220 20% 95%;
 
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 230 25% 15%;
+    --muted-foreground: 220 15% 60%;
 
-    --accent: 142 76% 36%;
+    --accent: 220 90% 60%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 17%;
-    --input: 217 33% 17%;
-    --ring: 221 83% 53%;
+    --border: 230 25% 20%;
+    --input: 230 25% 15%;
+    --ring: 250 85% 65%;
 
-    --chart-1: 221 83% 53%;
-    --chart-2: 142 76% 36%;
-    --chart-3: 43 96% 56%;
-    --chart-4: 280 90% 65%;
-    --chart-5: 340 82% 52%;
+    /* Glassmorphism effects */
+    --glass-bg: 230 25% 12% / 0.7;
+    --glass-border: 230 25% 25% / 0.5;
+    --glass-shadow: 250 50% 50% / 0.2;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(250 85% 65%), hsl(280 75% 65%));
+    --gradient-card: linear-gradient(135deg, hsl(230 25% 12% / 0.95), hsl(230 25% 15% / 0.95));
+    --gradient-accent: linear-gradient(135deg, hsl(220 90% 60%), hsl(250 85% 65%));
+    
+    /* Shadows */
+    --shadow-glass: 0 8px 32px 0 hsl(0 0% 0% / 0.4);
+    --shadow-hover: 0 12px 48px 0 hsl(0 0% 0% / 0.5);
+    --shadow-glow: 0 0 40px hsl(250 85% 65% / 0.4);
   }
 }
 
@@ -88,7 +116,32 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  /* Glassmorphism utilities */
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
+  .glass-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    border: 1px solid hsl(var(--glass-border));
+    box-shadow: var(--shadow-glass);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
   }
 
   /* Print styles for A4 invoices */
@@ -101,6 +154,12 @@ All colors MUST be HSL.
     body {
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
+    }
+    
+    /* Force white background for print */
+    * {
+      background: white !important;
+      color: black !important;
     }
   }
 }

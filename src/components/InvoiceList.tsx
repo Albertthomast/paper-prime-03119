@@ -7,6 +7,7 @@ import { Plus, FileText, Settings } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 import { getCurrencySymbol } from "@/lib/currency";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface Invoice {
   id: string;
@@ -74,19 +75,28 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
   };
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen p-8 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-accent/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "1s" }}></div>
+      </div>
+
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 animate-fade-in">
           <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">Invoice Manager</h1>
-            <p className="text-muted-foreground">Create and manage your invoices and quotes</p>
+            <h1 className="text-5xl font-bold text-foreground mb-2 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Invoice Manager
+            </h1>
+            <p className="text-muted-foreground">Create and manage your invoices and quotes with ease</p>
           </div>
           <div className="flex gap-3">
-            <Button variant="outline" onClick={onViewSettings}>
+            <ThemeToggle />
+            <Button variant="outline" onClick={onViewSettings} className="glass hover:glass-card">
               <Settings className="mr-2 h-4 w-4" />
               Settings
             </Button>
-            <Button onClick={onCreateInvoice}>
+            <Button onClick={onCreateInvoice} className="gradient-primary hover:shadow-glow transition-all duration-300">
               <Plus className="mr-2 h-4 w-4" />
               New Invoice
             </Button>
@@ -94,16 +104,18 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
         </div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading...</p>
+          <div className="text-center py-12 glass-card rounded-2xl animate-pulse">
+            <p className="text-muted-foreground">Loading your invoices...</p>
           </div>
         ) : invoices.length === 0 && quotations.length === 0 && proformas.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <FileText className="h-16 w-16 text-muted-foreground mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No invoices or quotes yet</h3>
-              <p className="text-muted-foreground mb-6">Create your first document to get started</p>
-              <Button onClick={onCreateInvoice}>
+          <Card className="glass-card rounded-2xl border-none overflow-hidden animate-fade-in">
+            <CardContent className="flex flex-col items-center justify-center py-16">
+              <div className="w-20 h-20 rounded-full gradient-primary flex items-center justify-center mb-6">
+                <FileText className="h-10 w-10 text-white" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-2">No invoices or quotes yet</h3>
+              <p className="text-muted-foreground mb-8">Create your first document to get started</p>
+              <Button onClick={onCreateInvoice} className="gradient-primary hover:shadow-glow">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Invoice
               </Button>
@@ -113,19 +125,20 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
           <div className="space-y-8">
             {/* Invoices Section */}
             {invoices.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-4">Invoices</h2>
+              <div className="animate-slide-in">
+                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Invoices</h2>
                 <div className="grid gap-4">
-                  {invoices.map((invoice) => (
+                  {invoices.map((invoice, index) => (
                     <Card
                       key={invoice.id}
-                      className="hover:shadow-lg transition-shadow cursor-pointer"
+                      className="glass-card rounded-2xl border-none cursor-pointer hover:shadow-hover transition-all duration-300 hover:scale-[1.02] animate-fade-in"
+                      style={{ animationDelay: `${index * 0.1}s` }}
                       onClick={() => onEditInvoice(invoice.id)}
                     >
                       <CardHeader>
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-xl mb-2">
+                            <CardTitle className="text-xl mb-2 font-semibold">
                               Invoice #{invoice.invoice_number}
                             </CardTitle>
                             <p className="text-sm text-muted-foreground">
@@ -133,10 +146,10 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-foreground">
+                            <p className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                               {getCurrencySymbol(invoice.currency)}{invoice.total.toFixed(2)}
                             </p>
-                            <Badge className={getStatusColor(invoice.status)}>
+                            <Badge className={getStatusColor(invoice.status) + " mt-2"}>
                               {invoice.status}
                             </Badge>
                           </div>
@@ -150,19 +163,20 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
 
             {/* Quotations Section */}
             {quotations.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-4">Quotations</h2>
+              <div className="animate-slide-in" style={{ animationDelay: "0.2s" }}>
+                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">Quotations</h2>
                 <div className="grid gap-4">
-                  {quotations.map((quote) => (
+                  {quotations.map((quote, index) => (
                     <Card
                       key={quote.id}
-                      className="hover:shadow-lg transition-shadow cursor-pointer"
+                      className="glass-card rounded-2xl border-none cursor-pointer hover:shadow-hover transition-all duration-300 hover:scale-[1.02] animate-fade-in"
+                      style={{ animationDelay: `${(index + quotations.length) * 0.1}s` }}
                       onClick={() => onEditInvoice(quote.id)}
                     >
                       <CardHeader>
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-xl mb-2">
+                            <CardTitle className="text-xl mb-2 font-semibold">
                               Quote #{quote.invoice_number}
                             </CardTitle>
                             <p className="text-sm text-muted-foreground">
@@ -170,10 +184,10 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-foreground">
+                            <p className="text-2xl font-bold bg-gradient-to-r from-accent to-primary bg-clip-text text-transparent">
                               {getCurrencySymbol(quote.currency)}{quote.total.toFixed(2)}
                             </p>
-                            <Badge className={getStatusColor(quote.status)}>
+                            <Badge className={getStatusColor(quote.status) + " mt-2"}>
                               {quote.status}
                             </Badge>
                           </div>
@@ -187,19 +201,20 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
 
             {/* Proforma Invoices Section */}
             {proformas.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-semibold mb-4">Proforma Invoices</h2>
+              <div className="animate-slide-in" style={{ animationDelay: "0.4s" }}>
+                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">Proforma Invoices</h2>
                 <div className="grid gap-4">
-                  {proformas.map((proforma) => (
+                  {proformas.map((proforma, index) => (
                     <Card
                       key={proforma.id}
-                      className="hover:shadow-lg transition-shadow cursor-pointer"
+                      className="glass-card rounded-2xl border-none cursor-pointer hover:shadow-hover transition-all duration-300 hover:scale-[1.02] animate-fade-in"
+                      style={{ animationDelay: `${(index + invoices.length + quotations.length) * 0.1}s` }}
                       onClick={() => onEditInvoice(proforma.id)}
                     >
                       <CardHeader>
                         <div className="flex justify-between items-start">
                           <div>
-                            <CardTitle className="text-xl mb-2">
+                            <CardTitle className="text-xl mb-2 font-semibold">
                               Proforma Invoice #{proforma.invoice_number}
                             </CardTitle>
                             <p className="text-sm text-muted-foreground">
@@ -207,10 +222,10 @@ export const InvoiceList = ({ onCreateInvoice, onEditInvoice, onViewSettings }: 
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-foreground">
+                            <p className="text-2xl font-bold bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
                               {getCurrencySymbol(proforma.currency)}{proforma.total.toFixed(2)}
                             </p>
-                            <Badge className={getStatusColor(proforma.status)}>
+                            <Badge className={getStatusColor(proforma.status) + " mt-2"}>
                               {proforma.status}
                             </Badge>
                           </div>
