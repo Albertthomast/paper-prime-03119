@@ -236,12 +236,18 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
 
   const calculateGst = () => {
     if (!gstEnabled) return 0;
-    const taxableAmount = calculateSubtotal() - calculateAdvance();
+    // When advance is enabled, calculate GST on advance amount, otherwise on subtotal
+    const taxableAmount = advanceEnabled ? calculateAdvance() : calculateSubtotal();
     return (taxableAmount * gstRate) / 100;
   };
 
   const calculateTotal = () => {
-    return calculateSubtotal() - calculateAdvance() + calculateGst();
+    // When advance is enabled, total is advance + GST on advance
+    // Otherwise, total is subtotal + GST
+    if (advanceEnabled) {
+      return calculateAdvance() + calculateGst();
+    }
+    return calculateSubtotal() + calculateGst();
   };
 
   const autoSave = useCallback(async () => {

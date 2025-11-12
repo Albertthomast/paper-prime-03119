@@ -157,7 +157,7 @@ export const InvoicePreview = ({ invoice, lineItems, companySettings, onBack }: 
                       Advance {invoice.advance_type === 'percentage' ? `(${invoice.advance_value}%)` : ''}:
                     </span>
                     <span className="font-semibold text-gray-900">
-                      -{getCurrencySymbol(invoice.currency)}
+                      {getCurrencySymbol(invoice.currency)}
                       {invoice.advance_type === 'percentage' 
                         ? ((invoice.subtotal * invoice.advance_value) / 100).toFixed(2)
                         : invoice.advance_value.toFixed(2)
