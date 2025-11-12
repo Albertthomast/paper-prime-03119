@@ -14,7 +14,242 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      clients: {
+        Row: {
+          address: string | null
+          created_at: string
+          email: string | null
+          gst_number: string | null
+          id: string
+          name: string
+          pan_number: string | null
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          gst_number?: string | null
+          id?: string
+          name: string
+          pan_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          created_at?: string
+          email?: string | null
+          gst_number?: string | null
+          id?: string
+          name?: string
+          pan_number?: string | null
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      company_settings: {
+        Row: {
+          account_number: string | null
+          bank_name: string | null
+          company_address: string | null
+          company_email: string | null
+          company_name: string
+          company_phone: string | null
+          created_at: string
+          currency: string
+          custom_units: string[] | null
+          default_payment_terms: string | null
+          gst_enabled: boolean
+          gst_number: string | null
+          gst_rate: number
+          id: string
+          ifsc_code: string | null
+          logo_url: string | null
+          next_invoice_number: number
+          next_proforma_number: number
+          next_quotation_number: number
+          pan_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          account_number?: string | null
+          bank_name?: string | null
+          company_address?: string | null
+          company_email?: string | null
+          company_name: string
+          company_phone?: string | null
+          created_at?: string
+          currency?: string
+          custom_units?: string[] | null
+          default_payment_terms?: string | null
+          gst_enabled?: boolean
+          gst_number?: string | null
+          gst_rate?: number
+          id?: string
+          ifsc_code?: string | null
+          logo_url?: string | null
+          next_invoice_number?: number
+          next_proforma_number?: number
+          next_quotation_number?: number
+          pan_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          account_number?: string | null
+          bank_name?: string | null
+          company_address?: string | null
+          company_email?: string | null
+          company_name?: string
+          company_phone?: string | null
+          created_at?: string
+          currency?: string
+          custom_units?: string[] | null
+          default_payment_terms?: string | null
+          gst_enabled?: boolean
+          gst_number?: string | null
+          gst_rate?: number
+          id?: string
+          ifsc_code?: string | null
+          logo_url?: string | null
+          next_invoice_number?: number
+          next_proforma_number?: number
+          next_quotation_number?: number
+          pan_number?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          advance_enabled: boolean | null
+          advance_type: string | null
+          advance_value: number | null
+          client_address: string | null
+          client_email: string | null
+          client_gst_number: string | null
+          client_name: string
+          client_pan_number: string | null
+          created_at: string
+          currency: string
+          discount_amount: number | null
+          discount_name: string | null
+          due_date: string | null
+          gst_amount: number
+          gst_enabled: boolean
+          id: string
+          invoice_date: string
+          invoice_number: string
+          invoice_type: string
+          notes: string | null
+          payment_terms: string | null
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          advance_enabled?: boolean | null
+          advance_type?: string | null
+          advance_value?: number | null
+          client_address?: string | null
+          client_email?: string | null
+          client_gst_number?: string | null
+          client_name: string
+          client_pan_number?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          discount_name?: string | null
+          due_date?: string | null
+          gst_amount?: number
+          gst_enabled?: boolean
+          id?: string
+          invoice_date: string
+          invoice_number: string
+          invoice_type: string
+          notes?: string | null
+          payment_terms?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          advance_enabled?: boolean | null
+          advance_type?: string | null
+          advance_value?: number | null
+          client_address?: string | null
+          client_email?: string | null
+          client_gst_number?: string | null
+          client_name?: string
+          client_pan_number?: string | null
+          created_at?: string
+          currency?: string
+          discount_amount?: number | null
+          discount_name?: string | null
+          due_date?: string | null
+          gst_amount?: number
+          gst_enabled?: boolean
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          invoice_type?: string
+          notes?: string | null
+          payment_terms?: string | null
+          status?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      line_items: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          rate: number
+          sort_order: number
+          unit: string
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          rate?: number
+          sort_order?: number
+          unit?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          rate?: number
+          sort_order?: number
+          unit?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "line_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

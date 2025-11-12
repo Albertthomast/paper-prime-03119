@@ -52,6 +52,15 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
   const [clients, setClients] = useState<any[]>([]);
   const [selectedClientId, setSelectedClientId] = useState<string>("");
   const [hasChanges, setHasChanges] = useState(false);
+  
+  // Discount fields
+  const [discountName, setDiscountName] = useState("Discount");
+  const [discountAmount, setDiscountAmount] = useState(0);
+  
+  // Advance payment fields
+  const [advanceEnabled, setAdvanceEnabled] = useState(false);
+  const [advanceType, setAdvanceType] = useState<"percentage" | "amount">("percentage");
+  const [advanceValue, setAdvanceValue] = useState(0);
 
   useEffect(() => {
     loadCompanySettings();
@@ -168,6 +177,11 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
       setGstEnabled(invoice.gst_enabled);
       setPaymentTerms(invoice.payment_terms || "");
       setNotes(invoice.notes || "");
+      setDiscountName(invoice.discount_name || "Discount");
+      setDiscountAmount(invoice.discount_amount || 0);
+      setAdvanceEnabled(invoice.advance_enabled || false);
+      setAdvanceType((invoice.advance_type as "percentage" | "amount") || "percentage");
+      setAdvanceValue(invoice.advance_value || 0);
       setLineItems(
         (invoice.line_items || []).map((item: any) => ({
           ...item,
@@ -204,16 +218,30 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
     }
   };
 
-  const calculateSubtotal = () => {
+  const calculateLineItemsTotal = () => {
     return lineItems.reduce((sum, item) => sum + item.amount, 0);
   };
 
+  const calculateSubtotal = () => {
+    return calculateLineItemsTotal() - discountAmount;
+  };
+
+  const calculateAdvance = () => {
+    if (!advanceEnabled) return 0;
+    if (advanceType === "percentage") {
+      return (calculateSubtotal() * advanceValue) / 100;
+    }
+    return advanceValue;
+  };
+
   const calculateGst = () => {
-    return gstEnabled ? (calculateSubtotal() * gstRate) / 100 : 0;
+    if (!gstEnabled) return 0;
+    const taxableAmount = calculateSubtotal() - calculateAdvance();
+    return (taxableAmount * gstRate) / 100;
   };
 
   const calculateTotal = () => {
-    return calculateSubtotal() + calculateGst();
+    return calculateSubtotal() - calculateAdvance() + calculateGst();
   };
 
   const autoSave = useCallback(async () => {
@@ -238,6 +266,11 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
         total: calculateTotal(),
         payment_terms: paymentTerms,
         notes,
+        discount_name: discountName,
+        discount_amount: discountAmount,
+        advance_enabled: advanceEnabled,
+        advance_type: advanceType,
+        advance_value: advanceValue,
       };
 
       await supabase
@@ -320,6 +353,11 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
         total: calculateTotal(),
         payment_terms: paymentTerms,
         notes,
+        discount_name: discountName,
+        discount_amount: discountAmount,
+        advance_enabled: advanceEnabled,
+        advance_type: advanceType,
+        advance_value: advanceValue,
       };
 
       let savedInvoiceId = invoiceId;
@@ -419,6 +457,11 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
           total: calculateTotal(),
           payment_terms: paymentTerms,
           notes,
+          discount_name: discountName,
+          discount_amount: discountAmount,
+          advance_enabled: advanceEnabled,
+          advance_type: advanceType,
+          advance_value: advanceValue,
         }}
         lineItems={lineItems}
         companySettings={companySettings}
@@ -717,9 +760,92 @@ export const InvoiceForm = ({ invoiceId, onBack }: InvoiceFormProps) => {
                   </Select>
                 </div>
                 
-                <div className="flex justify-between text-lg">
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Line Items Total:</span>
+                  <span>{getCurrencySymbol(currency)}{calculateLineItemsTotal().toFixed(2)}</span>
+                </div>
+
+                {/* Discount Section */}
+                <div className="space-y-2 border-t pt-2">
+                  <div className="flex justify-between items-center gap-2">
+                    <Input
+                      value={discountName}
+                      onChange={(e) => {
+                        setDiscountName(e.target.value);
+                        setHasChanges(true);
+                      }}
+                      placeholder="Discount"
+                      className="w-32 text-sm"
+                    />
+                    <Input
+                      type="number"
+                      value={discountAmount}
+                      onChange={(e) => {
+                        setDiscountAmount(parseFloat(e.target.value) || 0);
+                        setHasChanges(true);
+                      }}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                      className="w-32 text-sm"
+                    />
+                  </div>
+                </div>
+                
+                <div className="flex justify-between text-lg font-semibold border-t pt-2">
                   <span>Subtotal:</span>
-                  <span className="font-semibold">{getCurrencySymbol(currency)}{calculateSubtotal().toFixed(2)}</span>
+                  <span>{getCurrencySymbol(currency)}{calculateSubtotal().toFixed(2)}</span>
+                </div>
+
+                {/* Advance Payment Section */}
+                <div className="space-y-2 border-t pt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Switch 
+                        checked={advanceEnabled} 
+                        onCheckedChange={(val) => {
+                          setAdvanceEnabled(val);
+                          setHasChanges(true);
+                        }} 
+                      />
+                      <span className="text-sm">Advance Payment</span>
+                    </div>
+                  </div>
+                  
+                  {advanceEnabled && (
+                    <div className="flex gap-2 items-center">
+                      <Select 
+                        value={advanceType} 
+                        onValueChange={(val: "percentage" | "amount") => {
+                          setAdvanceType(val);
+                          setHasChanges(true);
+                        }}
+                      >
+                        <SelectTrigger className="w-32">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="percentage">Percentage</SelectItem>
+                          <SelectItem value="amount">Amount</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Input
+                        type="number"
+                        value={advanceValue}
+                        onChange={(e) => {
+                          setAdvanceValue(parseFloat(e.target.value) || 0);
+                          setHasChanges(true);
+                        }}
+                        placeholder="0"
+                        min="0"
+                        step="0.01"
+                        className="flex-1"
+                      />
+                      <span className="text-sm font-semibold w-32 text-right">
+                        {getCurrencySymbol(currency)}{calculateAdvance().toFixed(2)}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex justify-between items-center">

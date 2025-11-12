@@ -135,10 +135,36 @@ export const InvoicePreview = ({ invoice, lineItems, companySettings, onBack }: 
             {/* Totals */}
             <div className="flex justify-end mb-12">
               <div className="w-80">
+                {invoice.discount_amount > 0 && (
+                  <>
+                    <div className="flex justify-between py-2 text-sm text-gray-600">
+                      <span>Line Items Total:</span>
+                      <span>{getCurrencySymbol(invoice.currency)}{(invoice.subtotal + invoice.discount_amount).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between py-2 border-b border-gray-200">
+                      <span className="text-gray-700">{invoice.discount_name}:</span>
+                      <span className="font-semibold text-gray-900">-{getCurrencySymbol(invoice.currency)}{invoice.discount_amount.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
                 <div className="flex justify-between py-3 border-b border-gray-200">
-                  <span className="text-gray-700">Subtotal:</span>
+                  <span className="text-gray-700 font-semibold">Subtotal:</span>
                   <span className="font-semibold text-gray-900">{getCurrencySymbol(invoice.currency)}{invoice.subtotal.toFixed(2)}</span>
                 </div>
+                {invoice.advance_enabled && invoice.advance_value > 0 && (
+                  <div className="flex justify-between py-3 border-b border-gray-200">
+                    <span className="text-gray-700">
+                      Advance {invoice.advance_type === 'percentage' ? `(${invoice.advance_value}%)` : ''}:
+                    </span>
+                    <span className="font-semibold text-gray-900">
+                      -{getCurrencySymbol(invoice.currency)}
+                      {invoice.advance_type === 'percentage' 
+                        ? ((invoice.subtotal * invoice.advance_value) / 100).toFixed(2)
+                        : invoice.advance_value.toFixed(2)
+                      }
+                    </span>
+                  </div>
+                )}
                 {invoice.gst_enabled && (
                   <div className="flex justify-between py-3 border-b border-gray-200">
                     <span className="text-gray-700">GST ({invoice.gst_rate}%):</span>
