@@ -1,7 +1,8 @@
 import { useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Download } from "lucide-react";
-import { useReactToPrint } from "react-to-print";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import { format } from "date-fns";
 import { getCurrencySymbol } from "@/lib/currency";
 
@@ -35,33 +36,34 @@ export const InvoicePreview = ({ invoice, lineItems, companySettings, onBack }: 
   // Generate auto filename
   const documentTitle = `${getDocumentTypePrefix(invoice.invoice_type)}_${invoice.invoice_number}_${sanitizeFilename(invoice.client_name || 'Client')}`;
 
-  const handlePrint = useReactToPrint({
-    contentRef: printRef,
-    documentTitle,
-    pageStyle: `
-      @page {
-        size: A4;
-        margin: 0;
-      }
-      @media print {
-        html, body {
-          width: 210mm;
-          height: 297mm;
-          margin: 0;
-          padding: 0;
-          -webkit-print-color-adjust: exact;
-          print-color-adjust: exact;
-        }
-        .print-container {
-          transform: scale(0.95);
-          transform-origin: top center;
-          width: 210mm !important;
-          height: 297mm !important;
-          overflow: hidden;
-        }
-      }
-    `,
-  });
+  const handleDownloadPDF = async () => {
+    if (!printRef.current) return;
+    
+    try {
+      // Capture the preview element as a canvas
+      const canvas = await html2canvas(printRef.current, {
+        scale: 2, // Higher quality
+        useCORS: true, // Handle external images like logos
+        backgroundColor: '#ffffff',
+        logging: false,
+      });
+      
+      // Create PDF with A4 dimensions
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      // Add the image to the PDF
+      const imgData = canvas.toDataURL('image/png');
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      
+      // Download with auto-generated filename
+      pdf.save(`${documentTitle}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -71,7 +73,7 @@ export const InvoicePreview = ({ invoice, lineItems, companySettings, onBack }: 
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Edit
           </Button>
-          <Button onClick={handlePrint}>
+          <Button onClick={handleDownloadPDF}>
             <Download className="mr-2 h-4 w-4" />
             Download PDF
           </Button>
